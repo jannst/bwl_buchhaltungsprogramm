@@ -28,12 +28,18 @@
   padding-right: 10px;
 }
 
+.ui.positive.button {
+  margin-top: 10px;
+}
+
 .App-link {
   color: #61dafb;
 }
 
 .mainContainer {
-  padding-top: 50px;
+  padding-top: 70px;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 .headerCard {

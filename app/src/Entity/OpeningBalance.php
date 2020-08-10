@@ -21,11 +21,6 @@ class OpeningBalance
     /**
      * @ORM\Column(type="integer")
      */
-    private $year;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
     private $amount;
 
     /**
@@ -34,21 +29,15 @@ class OpeningBalance
      */
     private $account;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\OperatingYear", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $year;
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getYear(): ?int
-    {
-        return $this->year;
-    }
-
-    public function setYear(int $year): self
-    {
-        $this->year = $year;
-
-        return $this;
     }
 
     public function getAmount(): ?int
@@ -71,6 +60,18 @@ class OpeningBalance
     public function setAccount(?Account $account): self
     {
         $this->account = $account;
+
+        return $this;
+    }
+
+    public function getYear(): ?OperatingYear
+    {
+        return $this->year;
+    }
+
+    public function setYear(OperatingYear $year): self
+    {
+        $this->year = $year;
 
         return $this;
     }
