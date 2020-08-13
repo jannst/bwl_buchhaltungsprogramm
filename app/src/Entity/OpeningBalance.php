@@ -30,8 +30,7 @@ class OpeningBalance
     private $account;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\OperatingYear", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\Column(type="integer")
      */
     private $year;
 
@@ -64,12 +63,12 @@ class OpeningBalance
         return $this;
     }
 
-    public function getYear(): ?OperatingYear
+    public function getYear(): ?int
     {
         return $this->year;
     }
 
-    public function setYear(OperatingYear $year): self
+    public function setYear(int $year): self
     {
         $this->year = $year;
 

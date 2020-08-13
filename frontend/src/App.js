@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Menu, Dropdown } from 'semantic-ui-react'
 import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
 import { RestfulProvider } from "restful-react";
@@ -10,12 +10,23 @@ import {MainBook} from "./pages/MainBook";
 import {OpenBalance} from "./pages/OpenBalance";
 import {CloseBalance} from "./pages/CloseBalance";
 import { SWRConfig } from 'swr'
+import OperatingYearService from "./services/OpeningBalanceService";
 
 
 const fetcher = (...args) => fetch(window.$apiBase + args[0]).then((res) => res.json());
 
 function App() {
     const [activeItem, handleItemClick] = useState('browse');
+    const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+
+    const getYears = () => {
+        let res = [];
+        let year = new Date().getFullYear();
+        for(let i = year-50; i <= year+10; i++) {
+            res.push({ key: i, value: i, text: i })
+        }
+        return res;
+    }
 
     return (
             <Router>
@@ -73,6 +84,14 @@ function App() {
                         </Menu.Item>
                     </Link>
                     <Menu.Menu position='right' className="menuRight">
+
+                        <Dropdown
+                            placeholder='Geschäftsjahr'
+                            item scrolling
+                            options={getYears()}
+                            value={currentYear}
+                            onChange={(e, {value}) => {setCurrentYear(value)}}
+                        />
                         <Dropdown text='Commands' pointing='top' className='link item'>
                             <Dropdown.Menu>
                                 <Dropdown.Item>Inbox</Dropdown.Item>
@@ -87,13 +106,14 @@ function App() {
                     </Menu.Menu>
                 </Menu>
                 <div className="mainContainer">
+                    <h3>{currentYear}</h3>
                         <SWRConfig value={{ fetcher }}>
                         <Route exact path="/" component={Home} />
                         <Route exact path="/aktivkonten" component={() => <Accounts type='active' />} />
                         <Route exact path="/passivkonten" component={() => <Accounts type='passive' />} />
                         <Route exact path="/journal" component={Journal} />
                         <Route exact path="/hauptbuch" component={MainBook} />
-                        <Route exact path="/eroeffnungsbilanz" component={OpenBalance} />
+                        <Route exact path="/eroeffnungsbilanz" component={OpenBalance} year={currentYear}/>
                         <Route exact path="/schlussbilanz" component={CloseBalance} />
                         </SWRConfig>
                 </div>
