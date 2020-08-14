@@ -1,7 +1,11 @@
 import http from "../http-common";
 
 const getAll = (type) => {
-    return http.get("/accounts?typ="+type);
+    if(!type) {
+        return http.get("/accounts");
+    } else {
+        return http.get("/accounts?typ="+type);
+    }
 };
 
 const remove = id => {

@@ -106,14 +106,13 @@ function App() {
                     </Menu.Menu>
                 </Menu>
                 <div className="mainContainer">
-                    <h3>{currentYear}</h3>
                         <SWRConfig value={{ fetcher }}>
                         <Route exact path="/" component={Home} />
                         <Route exact path="/aktivkonten" component={() => <Accounts type='active' />} />
                         <Route exact path="/passivkonten" component={() => <Accounts type='passive' />} />
                         <Route exact path="/journal" component={Journal} />
                         <Route exact path="/hauptbuch" component={MainBook} />
-                        <Route exact path="/eroeffnungsbilanz" component={OpenBalance} year={currentYear}/>
+                        <Route exact path="/eroeffnungsbilanz" component={() => <OpenBalance year={currentYear} />}/>
                         <Route exact path="/schlussbilanz" component={CloseBalance} />
                         </SWRConfig>
                 </div>

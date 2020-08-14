@@ -1,7 +1,7 @@
 import http from "../http-common";
 
-const getAll = () => {
-    return http.get("/opening_balances");
+const getAll = (year) => {
+    return http.get("/opening_balances?year="+year);
 };
 
 const create = (data) => {
@@ -9,7 +9,7 @@ const create = (data) => {
 };
 
 const update = (data) => {
-    return http.post("/opening_balances/"+data.id, data);
+    return http.put("/opening_balances/"+data.id, data);
 };
 
 export default {

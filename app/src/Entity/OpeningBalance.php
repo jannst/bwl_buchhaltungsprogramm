@@ -4,9 +4,12 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
  * @ApiResource()
+ * @ApiFilter(SearchFilter::class, properties={"year": "exact"})
  * @ORM\Entity(repositoryClass="App\Repository\OpeningBalanceRepository")
  */
 class OpeningBalance
@@ -19,7 +22,7 @@ class OpeningBalance
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="float")
      */
     private $amount;
 
@@ -39,12 +42,12 @@ class OpeningBalance
         return $this->id;
     }
 
-    public function getAmount(): ?int
+    public function getAmount(): ?float
     {
         return $this->amount;
     }
 
-    public function setAmount(int $amount): self
+    public function setAmount(float $amount): self
     {
         $this->amount = $amount;
 
