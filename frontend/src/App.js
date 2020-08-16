@@ -11,6 +11,7 @@ import {OpenBalance} from "./pages/OpenBalance";
 import {CloseBalance} from "./pages/CloseBalance";
 import { SWRConfig } from 'swr'
 import OperatingYearService from "./services/OpeningBalanceService";
+import {Accounts2} from "./pages/Accounts2";
 
 
 const fetcher = (...args) => fetch(window.$apiBase + args[0]).then((res) => res.json());
@@ -31,26 +32,14 @@ function App() {
     return (
             <Router>
                 <Menu fixed="top">
-                    <Dropdown text='Konten' pointing='top' className='link item'>
-                        <Dropdown.Menu>
-                            <Link to={"aktivkonten"}>
-                                <Dropdown.Item
-                                    name='aktivkonten'
-                                    active={activeItem === 'aktivkonten'}
-                                    onClick={() => handleItemClick('aktivkonten')}>
-                                    Aktivkonten
-                                </Dropdown.Item>
-                            </Link>
-                            <Link to={"passivkonten"}>
-                                <Dropdown.Item
-                                    name='passivkonten'
-                                    active={activeItem === 'passivkonten'}
-                                    onClick={() => handleItemClick('passivkonten')}>
-                                    Passivkonten
-                                </Dropdown.Item>
-                            </Link>
-                        </Dropdown.Menu>
-                    </Dropdown>
+                    <Link to={"konten"}>
+                        <Menu.Item
+                            name='konten'
+                            active={activeItem === 'konten'}
+                            onClick={() => handleItemClick('konten')}>
+                            Konten
+                        </Menu.Item>
+                    </Link>
                     <Link to={"journal"}>
                         <Menu.Item
                             name='journal'
@@ -108,9 +97,8 @@ function App() {
                 <div className="mainContainer">
                         <SWRConfig value={{ fetcher }}>
                         <Route exact path="/" component={Home} />
-                        <Route exact path="/aktivkonten" component={() => <Accounts type='active' />} />
-                        <Route exact path="/passivkonten" component={() => <Accounts type='passive' />} />
-                        <Route exact path="/journal" component={Journal} />
+                        <Route exact path="/konten" component={() => <Accounts2 />} />
+                        <Route exact path="/journal" component={Accounts2} />
                         <Route exact path="/hauptbuch" component={MainBook} />
                         <Route exact path="/eroeffnungsbilanz" component={() => <OpenBalance year={currentYear} />}/>
                         <Route exact path="/schlussbilanz" component={CloseBalance} />

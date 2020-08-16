@@ -1,21 +1,14 @@
 import React, {Component} from 'react'
-import {Button, Form, Modal, Dropdown} from 'semantic-ui-react'
-import AccountService from "../services/AccountService";
+import {Button, Dropdown, Form, Label, Modal} from 'semantic-ui-react'
 
-export class AddAccount extends Component {
+export class AddBookingOperation extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            accounts: props.accounts,
-            accName: props.account ? props.account.name : "",
-            accType: props.account ? props.account.typ : ""
+            accName: props.account ? props.account.name : ""
         }
         this.account = props.account ? props.account : {}
         this.title = props.account ? "Konto bearbeiten" : "Konto erstellen"
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-
     }
 
     componentDidMount(){
@@ -31,88 +24,69 @@ export class AddAccount extends Component {
         }
     }
 
-    retrieveAccounts() {
-        AccountService.getAll()
-            .then(response => {
-                this.setState({accounts: response.data});
-            })
-            .catch(e => {
-                console.log(e);
-            });
-    };
-
     create() {
-        if(this.state.accName === this.account.name && this.state.accType === this.account.typ) {
+        if(this.state.accName === this.account.name) {
             this.setState({open: false});
             this.setState({nameError: null})
-            this.setState({typeError: null})
         }
-        else if(this.state.accounts.includes(this.state.accName)) {
+        else if(this.props.accounts.includes(this.state.accName)) {
             this.setState({nameError: "Name bereits verwendet"})
         }
         else if(!this.state.accName) {
             this.setState({nameError: "Name leer"})
-        } else if(!this.state.accType) {
-            this.setState({typeError: "Typ leer"})
         } else {
             this.setState({open: false});
             this.account.name = this.state.accName;
-            this.account.typ = this.state.accType;
             this.props.callback(this.account)
             this.setState({nameError: null})
-            this.setState({typeError: null})
-            this.setState({accName: null})
-            this.setState({accType: null})
         }
     }
 
     handleChange = (e) => this.setState({ [e.target.name]: e.target.value })
-    handleChangeDropDown = (e, {value}) => this.setState({ "accType": value })
-
-    options = [
-        { key: 1, text: 'Aktivkonto', value: "active" },
-        { key: 2, text: 'Passivkonto', value: "passive" },
-    ]
+    handleSoll = (e, {value}) => this.setState({ "soll": value })
+    handleHaben = (e, {value}) => this.setState({ "haben": value })
 
     render() {
-        const { accName, open, nameError, typeError, accType} = this.state
+        const { accName, open, nameError } = this.state
         return (
             <Modal
                 onClose={() => this.setState({open: false})}
-                onOpen={() => {
-                    this.setState({open: true});
-                    this.retrieveAccounts();
-                }}
+                onOpen={() => this.setState({open: true})}
                 open={open}
                 trigger={this.props.trigger}
                 size="tiny"
             >
-                <Modal.Header>{this.title}</Modal.Header>
+                <Modal.Header>Neuer Buchungssatz</Modal.Header>
                 <Modal.Content image>
                     <Modal.Description>
-                        {this.state.accounts &&
                         <Form>
+                            <label>Soll</label>
+                            <Dropdown
+                                placeholder='Soll Konto'
+                                name='soll'
+                                options={this.options}
+                                fluid
+                                selection
+                                onChange={this.handleChangeDropDown}
+                            />
+                            <label>an Haben</label>
+                            <Dropdown
+                                placeholder='Haben'
+                                name='haben'
+                                options={this.options}
+                                fluid
+                                selection
+                                onChange={this.handleChangeDropDown}
+                            />
                             <Form.Field
-                                label="Konto Name"
+                                label="Betrag"
                                 control="input"
                                 name='accName'
                                 value={accName}
                                 onChange={this.handleChange}
                                 error={nameError}
                             />
-                            <Dropdown
-                                placeholder='Kontotyp'
-                                name='accType'
-                                options={this.options}
-                                value={accType}
-                                fluid
-                                selection
-                                onChange={this.handleChangeDropDown}
-                                error={typeError}
-                                disabled={this.props.account != null}
-                            />
                         </Form>
-                        }
                     </Modal.Description>
                 </Modal.Content>
                 <Modal.Actions>

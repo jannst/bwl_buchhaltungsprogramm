@@ -7,28 +7,14 @@ export const Accounts = (props) => {
     const [accounts, setAccounts] = useState(null);
 
     useEffect(() => {
-        retrieveAccounts();
-    }, []);
+        setAccounts(props.accounts);
+    }, [props.accounts]);
 
-    const retrieveAccounts = () => {
-        AccountService.getAll(props.type)
-            .then(response => {
-                setAccounts(response.data);
-            })
-            .catch(e => {
-                console.log(e);
-            });
-    };
 
-    const createAccount = (account) => {
-        account.typ = props.type;
-        AccountService.create(account).then(response => {
-            retrieveAccounts();
-        })
-    }
     const updateAccount = (account) => {
         AccountService.update(account).then(response => {
-            retrieveAccounts();
+            let newAccounts = [...accounts.map(acc => acc.id === account.id ? account : acc)];
+            setAccounts(newAccounts);
         })
     }
 
@@ -38,17 +24,11 @@ export const Accounts = (props) => {
                 console.log(e);
             });
 
-        let newAccounts = [];
-        accounts.forEach((val) => {
-            if (val.id !== id) {
-                newAccounts.push(val);
-            }
-        });
+        let newAccounts = [...accounts.filter(acc => acc.id !== id)];
         setAccounts(newAccounts);
     };
 
-    return <div>
-        <Card.Group>
+    return <Card.Group centered>
             { accounts && accounts.map(function (account) {
                 return(
                     <Card key={account.id}>
@@ -74,12 +54,5 @@ export const Accounts = (props) => {
                 )
             })
             }
-        </Card.Group>
-        { accounts && <AddAccount
-            callback={createAccount}
-            accounts={accounts.map((val) => val.name)}
-            trigger={<Button className="ui positive button">Konto hinzufügen</Button>}
-        /> }
-
-    </div>;
+        </Card.Group>;
 }

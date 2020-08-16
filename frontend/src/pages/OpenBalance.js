@@ -75,6 +75,7 @@ export const OpenBalance = (props) => {
             accounts.forEach(account => {
                 let val = openingBalances[account.id].amount;
                 if (numberRegexp.test(val)) {
+                    val = parseFloat(val);
                     if (account.typ === "active") {
                         balance += val;
                     } else {
