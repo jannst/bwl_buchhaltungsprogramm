@@ -4,9 +4,12 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
  * @ApiResource()
+ * @ApiFilter(SearchFilter::class, properties={"year": "exact"})
  * @ORM\Entity(repositoryClass="App\Repository\BookingOperationRepository")
  */
 class BookingOperation
@@ -17,11 +20,6 @@ class BookingOperation
      * @ORM\Column(type="integer")
      */
     private $id;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $date;
 
     /**
      * @ORM\Column(type="string", length=1024, nullable=true)
@@ -40,21 +38,19 @@ class BookingOperation
      */
     private $habenAccount;
 
+    /**
+     * @ORM\Column(type="float")
+     */
+    private $amount;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $year;
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getDate(): ?\DateTimeInterface
-    {
-        return $this->date;
-    }
-
-    public function setDate(\DateTimeInterface $date): self
-    {
-        $this->date = $date;
-
-        return $this;
     }
 
     public function getDescription(): ?string
@@ -89,6 +85,30 @@ class BookingOperation
     public function setHabenAccount(?Account $habenAccount): self
     {
         $this->habenAccount = $habenAccount;
+
+        return $this;
+    }
+
+    public function getAmount(): ?float
+    {
+        return $this->amount;
+    }
+
+    public function setAmount(float $amount): self
+    {
+        $this->amount = $amount;
+
+        return $this;
+    }
+
+    public function getYear(): ?int
+    {
+        return $this->year;
+    }
+
+    public function setYear(int $year): self
+    {
+        $this->year = $year;
 
         return $this;
     }

@@ -2,6 +2,7 @@ import { Card, Button, Icon} from 'semantic-ui-react'
 import React, { useState, useEffect } from "react";
 import AccountService from "../services/AccountService";
 import { AddAccount } from "./AddAccount"
+import {AccountBookings} from "./AccountsBookings";
 
 export const Accounts = (props) => {
     const [accounts, setAccounts] = useState(null);
@@ -31,7 +32,7 @@ export const Accounts = (props) => {
     return <Card.Group centered>
             { accounts && accounts.map(function (account) {
                 return(
-                    <Card key={account.id}>
+                    <Card key={account.id} fluid>
                         <Card.Content>
                             <Button.Group floated='right'>
                                 <AddAccount
@@ -44,11 +45,15 @@ export const Accounts = (props) => {
                                     <Icon name="close"/>
                                 </Button>
                             </Button.Group>
-
                             <Card.Header>{account.name}</Card.Header>
                         </Card.Content>
-                        <Card.Content extra>
-
+                        <Card.Content>
+                            <AccountBookings
+                                bookingOperationsSoll={props.bookingOpertions.filter(op => op.sollAccount === "/api/accounts/"+account.id)}
+                                bookingOperationsHaben={props.bookingOpertions.filter(op => op.habenAccount === "/api/accounts/"+account.id)}
+                                account={account}
+                                accounts={accounts}
+                            />
                         </Card.Content>
                     </Card>
                 )

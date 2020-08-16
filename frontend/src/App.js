@@ -1,24 +1,23 @@
 import React, {useEffect, useState} from 'react';
 import {Menu, Dropdown } from 'semantic-ui-react'
 import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
-import { RestfulProvider } from "restful-react";
 import './App.css';
-import { Accounts } from './pages/Accounts'
 import {Home} from "./pages/Home";
 import {Journal} from "./pages/Journal";
 import {MainBook} from "./pages/MainBook";
 import {OpenBalance} from "./pages/OpenBalance";
 import {CloseBalance} from "./pages/CloseBalance";
 import { SWRConfig } from 'swr'
-import OperatingYearService from "./services/OpeningBalanceService";
 import {Accounts2} from "./pages/Accounts2";
+import  Cookies from 'universal-cookie';
 
 
 const fetcher = (...args) => fetch(window.$apiBase + args[0]).then((res) => res.json());
 
 function App() {
+    const cookies = new Cookies();
     const [activeItem, handleItemClick] = useState('browse');
-    const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+    const [currentYear, setCurrentYear] = useState(cookies.get("year") ? parseInt(cookies.get("year")): new Date().getFullYear());
 
     const getYears = () => {
         let res = [];
@@ -79,7 +78,10 @@ function App() {
                             item scrolling
                             options={getYears()}
                             value={currentYear}
-                            onChange={(e, {value}) => {setCurrentYear(value)}}
+                            onChange={(e, {value}) => {
+                                cookies.set('year', value, { path: '/' });
+                                setCurrentYear(value);
+                            }}
                         />
                         <Dropdown text='Commands' pointing='top' className='link item'>
                             <Dropdown.Menu>
@@ -97,8 +99,8 @@ function App() {
                 <div className="mainContainer">
                         <SWRConfig value={{ fetcher }}>
                         <Route exact path="/" component={Home} />
-                        <Route exact path="/konten" component={() => <Accounts2 />} />
-                        <Route exact path="/journal" component={Accounts2} />
+                        <Route exact path="/konten" component={() => <Accounts2 year={currentYear}/>} />
+                        <Route exact path="/journal" component={Journal} />
                         <Route exact path="/hauptbuch" component={MainBook} />
                         <Route exact path="/eroeffnungsbilanz" component={() => <OpenBalance year={currentYear} />}/>
                         <Route exact path="/schlussbilanz" component={CloseBalance} />

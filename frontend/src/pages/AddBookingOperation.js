@@ -1,59 +1,56 @@
-import React, {Component} from 'react'
-import {Button, Dropdown, Form, Label, Modal} from 'semantic-ui-react'
+import React, { useState } from "react";
+import {Button, Dropdown, Form, Modal} from 'semantic-ui-react'
+import AccountService from "../services/AccountService";
 
-export class AddBookingOperation extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            accName: props.account ? props.account.name : ""
-        }
-        this.account = props.account ? props.account : {}
-        this.title = props.account ? "Konto bearbeiten" : "Konto erstellen"
-    }
+export const AddBookingOperation = (props) => {
+    const [options, setOptions] = useState(null);
+    const [soll, setSoll] = useState(null);
+    const [haben, setHaben] = useState(null);
+    const [open, setOpen] = useState(false);
+    const [amount, setAmount] = useState(null);
+    const [description, setDescription] = useState(null);
+    const numberRegexp = /^\d{1,10}[.]?\d{0,10}$/;
 
-    componentDidMount(){
-        document.addEventListener("keydown", this.handleKeyDown.bind(this), false);
-    }
-    componentWillUnmount(){
-        document.removeEventListener("keydown", this.handleKeyDown.bind(this), false);
-    }
+    const retrieveAccounts = () => {
+        AccountService.getAll()
+            .then(response => {
+                setOptions(response.data.map(acc => {return { key: acc.id, text: acc.name + " (" + (acc.typ === "active" ? "Aktiv" : "Passiv") +")", value: acc.id }}));
+            })
+            .catch(e => {
+                console.log(e);
+            });
+    };
 
-    handleKeyDown(e) {
-        if(e.keyCode === 13 && this.state.open) {
-            this.create();
-        }
-    }
-
-    create() {
-        if(this.state.accName === this.account.name) {
-            this.setState({open: false});
-            this.setState({nameError: null})
-        }
-        else if(this.props.accounts.includes(this.state.accName)) {
-            this.setState({nameError: "Name bereits verwendet"})
-        }
-        else if(!this.state.accName) {
-            this.setState({nameError: "Name leer"})
-        } else {
-            this.setState({open: false});
-            this.account.name = this.state.accName;
-            this.props.callback(this.account)
-            this.setState({nameError: null})
+    const create = () => {
+        if(numberRegexp.test(amount) && parseFloat(amount) > 0 && soll && haben && soll !== haben) {
+            let bookingOperation = props.bookingOperation ? props.bookingOperation : {};
+            bookingOperation.description = description;
+            bookingOperation.sollAccount = "/api/accounts/"+soll;
+            bookingOperation.habenAccount = "/api/accounts/"+haben;
+            bookingOperation.amount = parseFloat(amount);
+            bookingOperation.year = props.year;
+            props.callback(bookingOperation);
+            onClose();
         }
     }
 
-    handleChange = (e) => this.setState({ [e.target.name]: e.target.value })
-    handleSoll = (e, {value}) => this.setState({ "soll": value })
-    handleHaben = (e, {value}) => this.setState({ "haben": value })
+    const onClose = () => {
+            setOpen(false);
+            setSoll(null);
+            setHaben(null);
+            setAmount(null);
+            setDescription(null);
+    }
 
-    render() {
-        const { accName, open, nameError } = this.state
-        return (
+    return(
             <Modal
-                onClose={() => this.setState({open: false})}
-                onOpen={() => this.setState({open: true})}
+                onClose={onClose}
+                onOpen={() => {
+                    setOpen(true);
+                    retrieveAccounts();
+                }}
                 open={open}
-                trigger={this.props.trigger}
+                trigger={props.trigger}
                 size="tiny"
             >
                 <Modal.Header>Neuer Buchungssatz</Modal.Header>
@@ -64,27 +61,38 @@ export class AddBookingOperation extends Component {
                             <Dropdown
                                 placeholder='Soll Konto'
                                 name='soll'
-                                options={this.options}
+                                options={options}
                                 fluid
                                 selection
-                                onChange={this.handleChangeDropDown}
+                                value={soll}
+                                error={haben === soll && soll !== null ? "Ziel- und Empfängerkonto gleich" : null}
+                                onChange={(e, {value}) => setSoll(value)}
                             />
                             <label>an Haben</label>
                             <Dropdown
-                                placeholder='Haben'
+                                placeholder='Haben Konto'
                                 name='haben'
-                                options={this.options}
+                                options={options}
                                 fluid
                                 selection
-                                onChange={this.handleChangeDropDown}
+                                value={haben}
+                                error={haben === soll && soll !== null ? "Ziel- und Empfängerkonto gleich" : null}
+                                onChange={(e, {value}) => setHaben(value)}
                             />
                             <Form.Field
                                 label="Betrag"
                                 control="input"
                                 name='accName'
-                                value={accName}
-                                onChange={this.handleChange}
-                                error={nameError}
+                                value={amount}
+                                error={numberRegexp.test(amount) ? null : "Keine Zahl"}
+                                onChange={(e) => setAmount(e.target.value)}
+                            />
+                            <Form.Field
+                                label="Beschreibung"
+                                control="input"
+                                name='description'
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
                             />
                         </Form>
                     </Modal.Description>
@@ -94,13 +102,12 @@ export class AddBookingOperation extends Component {
                         content="Speichern"
                         labelPosition='right'
                         icon='checkmark'
-                        onClick={this.create.bind(this)}
+                        onClick={create}
                         positive
                     />
                 </Modal.Actions>
             </Modal>
         )
-    }
 }
 
 
