@@ -5,14 +5,17 @@ import { AddAccount } from "./AddAccount"
 import {AddBookingOperation} from "./AddBookingOperation";
 import {Accounts} from "./Accounts";
 import BookingOperationService from "../services/BookingOperationService";
+import OpeningBalanceService from "../services/OpeningBalanceService";
 
 export const Accounts2 = (props) => {
     const [accounts, setAccounts] = useState(null);
+    const [openingBalances, setOpeningBalances] = useState(null);
     const [bookingOperations, setBookingOperations] = useState(null);
 
     useEffect(() => {
         retrieveAccounts();
         retrieveBookingOperations();
+        retrieveOpeningBalances();
     }, []);
 
 
@@ -24,6 +27,16 @@ export const Accounts2 = (props) => {
             .catch(e => {
                 console.log(e);
             });
+    };
+
+    const retrieveOpeningBalances = () => {
+        OpeningBalanceService.getAll(props.year)
+            .then(response => {
+                setOpeningBalances(response.data);
+            })
+            .catch(e => {
+            console.log(e);
+        });
     };
 
     const retrieveAccounts = () => {
@@ -53,9 +66,10 @@ export const Accounts2 = (props) => {
             <Grid.Column>
                 <Segment basic>
                     <Header as='h3' textAlign='center'>Aktivkonten</Header>
-                    {accounts && bookingOperations &&
+                    {accounts && openingBalances && bookingOperations &&
                     <Accounts
                         year={props.year}
+                        openingBalances={openingBalances}
                         bookingOpertions={bookingOperations}
                         accounts={accounts}
                         type="active"
@@ -65,9 +79,10 @@ export const Accounts2 = (props) => {
             <Grid.Column>
                 <Segment basic>
                     <Header as='h3' textAlign='center'>Passivkonten</Header>
-                    {accounts && bookingOperations &&
+                    {accounts && bookingOperations && openingBalances &&
                     <Accounts
                         year={props.year}
+                        openingBalances={openingBalances}
                         type="passive"
                         bookingOpertions={bookingOperations}
                         accounts={accounts}

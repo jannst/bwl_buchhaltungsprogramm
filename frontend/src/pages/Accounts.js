@@ -29,6 +29,10 @@ export const Accounts = (props) => {
         setAccounts(newAccounts);
     };
 
+    const getOpeningBalance = (account) => {
+        return (props.openingBalances.filter(bal => bal.account === "/api/accounts/"+account.id)[0] || []).amount || 0;
+    };
+
     return <Card.Group centered>
             { accounts && accounts.filter(acc => acc.typ === props.type).map(function (account) {
                 return(
@@ -49,6 +53,7 @@ export const Accounts = (props) => {
                         </Card.Content>
                         <Card.Content>
                             <AccountBookings
+                                openingBalance={getOpeningBalance(account)}
                                 bookingOperationsSoll={props.bookingOpertions.filter(op => op.sollAccount === "/api/accounts/"+account.id)}
                                 bookingOperationsHaben={props.bookingOpertions.filter(op => op.habenAccount === "/api/accounts/"+account.id)}
                                 account={account}
