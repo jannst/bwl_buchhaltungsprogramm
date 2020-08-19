@@ -30,7 +30,7 @@ export const Accounts = (props) => {
     };
 
     return <Card.Group centered>
-            { accounts && accounts.map(function (account) {
+            { accounts && accounts.filter(acc => acc.typ === props.type).map(function (account) {
                 return(
                     <Card key={account.id} fluid>
                         <Card.Content>

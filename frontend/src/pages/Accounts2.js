@@ -53,13 +53,25 @@ export const Accounts2 = (props) => {
             <Grid.Column>
                 <Segment basic>
                     <Header as='h3' textAlign='center'>Aktivkonten</Header>
-                    {accounts && bookingOperations && <Accounts year={props.year} bookingOpertions={bookingOperations} accounts={accounts.filter(acc => acc.typ === "active")}/>}
+                    {accounts && bookingOperations &&
+                    <Accounts
+                        year={props.year}
+                        bookingOpertions={bookingOperations}
+                        accounts={accounts}
+                        type="active"
+                    />}
                 </Segment>
             </Grid.Column>
             <Grid.Column>
                 <Segment basic>
                     <Header as='h3' textAlign='center'>Passivkonten</Header>
-                    {accounts && bookingOperations && <Accounts year={props.year} type="passive" bookingOpertions={bookingOperations} accounts={accounts.filter(acc => acc.typ === "passive")}/>}
+                    {accounts && bookingOperations &&
+                    <Accounts
+                        year={props.year}
+                        type="passive"
+                        bookingOpertions={bookingOperations}
+                        accounts={accounts}
+                    />}
                 </Segment>
             </Grid.Column>
         </Grid>
