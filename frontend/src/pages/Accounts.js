@@ -33,7 +33,7 @@ export const Accounts = (props) => {
         return (props.openingBalances.filter(bal => bal.account === "/api/accounts/"+account.id)[0] || []).amount || 0;
     };
 
-    return <Card.Group centered>
+    return <Card.Group itemsPerRow={2} >
             { accounts && accounts.filter(acc => acc.typ === props.type).map(function (account) {
                 return(
                     <Card key={account.id} fluid>

@@ -57,7 +57,6 @@ export const Accounts2 = (props) => {
     const createBuchungssatz = (bookingOperation) => {
         BookingOperationService.create(bookingOperation).then(resp => {
             retrieveBookingOperations()
-            //setBookingOperations([]);
         });
     }
 

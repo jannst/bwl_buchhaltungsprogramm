@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
@@ -28,12 +29,14 @@ class BookingOperation
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Account")
+     * @JoinColumn(referencedColumnName="id", onDelete="CASCADE")
      * @ORM\JoinColumn(nullable=false)
      */
     private $sollAccount;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Account")
+     * @JoinColumn(referencedColumnName="id", onDelete="CASCADE")
      * @ORM\JoinColumn(nullable=false)
      */
     private $habenAccount;
@@ -47,6 +50,16 @@ class BookingOperation
      * @ORM\Column(type="integer")
      */
     private $year;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $bookingDate;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $runningNumber;
 
     public function getId(): ?int
     {
@@ -109,6 +122,30 @@ class BookingOperation
     public function setYear(int $year): self
     {
         $this->year = $year;
+
+        return $this;
+    }
+
+    public function getBookingDate(): ?\DateTimeInterface
+    {
+        return $this->bookingDate;
+    }
+
+    public function setBookingDate(\DateTimeInterface $bookingDate): self
+    {
+        $this->bookingDate = $bookingDate;
+
+        return $this;
+    }
+
+    public function getRunningNumber(): ?int
+    {
+        return $this->runningNumber;
+    }
+
+    public function setRunningNumber(int $runningNumber): self
+    {
+        $this->runningNumber = $runningNumber;
 
         return $this;
     }

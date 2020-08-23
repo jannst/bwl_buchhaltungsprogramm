@@ -4,7 +4,6 @@ import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
 import './App.css';
 import {Home} from "./pages/Home";
 import {Journal} from "./pages/Journal";
-import {MainBook} from "./pages/MainBook";
 import {OpenBalance} from "./pages/OpenBalance";
 import {CloseBalance} from "./pages/CloseBalance";
 import { SWRConfig } from 'swr'
@@ -31,12 +30,12 @@ function App() {
     return (
             <Router>
                 <Menu fixed="top">
-                    <Link to={"konten"}>
+                    <Link to={"hauptbuch"}>
                         <Menu.Item
-                            name='konten'
-                            active={activeItem === 'konten'}
-                            onClick={() => handleItemClick('konten')}>
-                            Konten
+                            name='hauptbuch'
+                            active={activeItem === 'hauptbuch'}
+                            onClick={() => handleItemClick('hauptbuch')}>
+                            Hauptbuch
                         </Menu.Item>
                     </Link>
                     <Link to={"journal"}>
@@ -45,14 +44,6 @@ function App() {
                             active={activeItem === 'journal'}
                             onClick={() => handleItemClick('journal')}>
                             Journal
-                        </Menu.Item>
-                    </Link>
-                    <Link to={"hauptbuch"}>
-                        <Menu.Item
-                            name='hauptbuch'
-                            active={activeItem === 'hauptbuch'}
-                            onClick={() => handleItemClick('hauptbuch')}>
-                            Hauptbuch
                         </Menu.Item>
                     </Link>
                     <Link to={"eroeffnungsbilanz"}>
@@ -99,11 +90,10 @@ function App() {
                 <div className="mainContainer">
                         <SWRConfig value={{ fetcher }}>
                         <Route exact path="/" component={Home} />
-                        <Route exact path="/konten" component={() => <Accounts2 year={currentYear}/>} />
-                        <Route exact path="/journal" component={Journal} />
-                        <Route exact path="/hauptbuch" component={MainBook} />
+                        <Route exact path="/hauptbuch" component={() => <Accounts2 year={currentYear}/>} />
+                        <Route exact path="/journal" component={() => <Journal year={currentYear} />}/>
                         <Route exact path="/eroeffnungsbilanz" component={() => <OpenBalance year={currentYear} />}/>
-                        <Route exact path="/schlussbilanz" component={CloseBalance} />
+                        <Route exact path="/schlussbilanz" component={() => <CloseBalance year={currentYear} />} />
                         </SWRConfig>
                 </div>
             </Router>
