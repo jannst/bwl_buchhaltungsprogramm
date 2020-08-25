@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-class DatabaseClearController extends AbstractController
+class DatabaseFixturesLoadController extends AbstractController
 {
 
     /**
@@ -25,12 +25,12 @@ class DatabaseClearController extends AbstractController
 
 
     /**
-     * @Route("/database/clear", name="database_clear")
+     * @Route("/database/fixtures_load", name="fixtures_load")
      * @throws \Exception
      */
     public function index()
     {
-        exec("../bin/console doctrine:schema:drop --force && ../bin/console doctrine:schema:create");
+        exec("../bin/console doctrine:fixtures:load --env=dev");
         return new Response();
     }
 }

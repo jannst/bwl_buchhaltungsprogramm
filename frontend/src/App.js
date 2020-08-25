@@ -9,6 +9,7 @@ import {CloseBalance} from "./pages/CloseBalance";
 import { SWRConfig } from 'swr'
 import {Accounts2} from "./pages/Accounts2";
 import  Cookies from 'universal-cookie';
+import http from "./http-common";
 
 
 const fetcher = (...args) => fetch(window.$apiBase + args[0]).then((res) => res.json());
@@ -76,13 +77,24 @@ function App() {
                         />
                         <Dropdown text='Commands' pointing='top' className='link item'>
                             <Dropdown.Menu>
-                                <Dropdown.Item>Inbox</Dropdown.Item>
-                                <Dropdown.Item>Starred</Dropdown.Item>
-                                <Dropdown.Item>Sent Mail</Dropdown.Item>
-                                <Dropdown.Item>Drafts (143)</Dropdown.Item>
-                                <Dropdown.Divider />
-                                <Dropdown.Item>Spam (1009)</Dropdown.Item>
-                                <Dropdown.Item>Trash</Dropdown.Item>
+                                <Dropdown.Item
+                                    onClick={() => {
+                                        http.get("database/clear").then(() => {
+                                            window.location.reload();
+                                        });
+                                    }}
+                                >
+                                    Datenbank leeren
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                    onClick={() => {
+                                        http.get("database/fixtures_load").then(() => {
+                                            window.location.reload();
+                                        });
+                                    }}
+                                >
+                                    Demodaten laden
+                                </Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
                     </Menu.Menu>

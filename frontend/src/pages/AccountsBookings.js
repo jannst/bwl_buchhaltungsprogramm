@@ -41,7 +41,7 @@ export const AccountBookings = (props) => {
                 {
                     props.bookingOperationsSoll.map(op => {
                         let otherAcc = findOtherAccount(op, true);
-                        return <Grid.Row>{otherAcc.name} #{op.runningNumber} <span style={{float: "right"}}>{op.amount}€</span></Grid.Row>;
+                        return otherAcc ? <Grid.Row>{otherAcc.name} #{op.runningNumber} <span style={{float: "right"}}>{op.amount}€</span></Grid.Row> : null;
                     })
                 }
                 <AccountBalance isSoll={true} />
@@ -54,7 +54,7 @@ export const AccountBookings = (props) => {
                 {
                     props.bookingOperationsHaben.map(op => {
                         let otherAcc = findOtherAccount(op, false);
-                        return <Grid.Row>{otherAcc.name} #{op.runningNumber}  <span style={{float: "right"}}>{op.amount}€</span></Grid.Row>;
+                        return otherAcc ? <Grid.Row>{otherAcc.name} #{op.runningNumber}  <span style={{float: "right"}}>{op.amount}€</span></Grid.Row> : null;
                     })
                 }
                 <AccountBalance isSoll={false} />
