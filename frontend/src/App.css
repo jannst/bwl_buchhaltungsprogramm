@@ -36,6 +36,10 @@
   color: #61dafb;
 }
 
+.accCard {
+  min-width: 400px;
+}
+
 .mainContainer {
   padding-top: 70px;
   margin-left: 20px;

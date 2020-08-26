@@ -60,7 +60,7 @@ export const Accounts2 = (props) => {
         });
     }
 
-    return <div>
+    return <div style={{paddingBottom: "15px"}}>
         <Grid centered columns={2} celled='internally'>
             <Grid.Column>
                 <Segment basic>
