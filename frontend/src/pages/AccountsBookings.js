@@ -21,22 +21,12 @@ export const AccountBookings = (props) => {
         let sollAmount = SollAmount();
         let habenAmount = HabenAmount();
 
-        let result = props.openingBalance + (props.account.typ === "active" ? sollAmount - habenAmount : habenAmount - sollAmount)
+        let result = sollAmount > habenAmount ? sollAmount - habenAmount : habenAmount - sollAmount;
 
-        if(info.isSoll) {
-            if(props.account.typ === "active") {
-                result = result > 0 ? <span style={{color: "green"}}>{result}€</span> : null;
-            } else {
-                result =  result < 0 ? <span style={{color: "red"}}>{Math.abs(result)}€</span> : null;
-            }
-        } else {
-            if(props.account.typ === "passive") {
-                result = result > 0 ? <span style={{color: "green"}}>{result}€</span> : null;
-            } else {
-                result =  result < 0 ? <span style={{color: "red"}}>{Math.abs(result)}€</span> : null;
-            }
+        if((sollAmount < habenAmount && info.isSoll) || (sollAmount > habenAmount && !info.isSoll)) {
+            return <Grid.Row><span style={{fontWeight: "bold"}}>Saldo  <span style={{float: "right"}}>{result}€</span></span></Grid.Row>
         }
-        return result ? <Grid.Row><span style={{fontWeight: "bold"}}>Betrag  <span style={{float: "right"}}>{result}</span></span></Grid.Row> : null;
+        return null;
     };
 
     return(
@@ -69,10 +59,12 @@ export const AccountBookings = (props) => {
             </Grid>
             <Grid centered columns={2} divided={true}>
                 <Grid.Column>
-                    <Grid.Row><span style={{fontWeight: "bold"}}>Soll  <span style={{float: "right"}}><SollAmount/>€</span></span></Grid.Row>
+                    <Grid.Row><span style={{fontWeight: "bold"}}>Summe Soll  <span style={{float: "right"}}><SollAmount/>€</span></span></Grid.Row>
+                    <AccountBalance isSoll={true} />
                 </Grid.Column>
                 <Grid.Column>
-                    <Grid.Row><span style={{fontWeight: "bold"}}>Haben  <span style={{float: "right"}}><HabenAmount/>€</span></span></Grid.Row>
+                    <Grid.Row><span style={{fontWeight: "bold"}}>Summe Haben  <span style={{float: "right"}}><HabenAmount/>€</span></span></Grid.Row>
+                    <AccountBalance isSoll={false} />
                 </Grid.Column>
             </Grid>
         </div>

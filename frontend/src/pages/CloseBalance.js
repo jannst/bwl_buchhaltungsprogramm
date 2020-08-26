@@ -11,7 +11,7 @@ export const CloseBalance = (props) => {
     const [accounts, setAccounts] = useState(null);
     const [openingBalances, setOpeningBalances] = useState(null);
     const [bookingOperations, setBookingOperations] = useState(null);
-    const [profit, setProfit] = useState(0);
+    const [profit, setProfit] = useState(null);
 
     const retrieveOpeningBalances = () => {
         OpeningBalanceService.getAll(props.year)
@@ -63,6 +63,13 @@ export const CloseBalance = (props) => {
     }
 
     const Profit = () => {
+        if(profit === null) {
+            return (<Message negative>
+                <Message.Header>Passivkonto "Eigenkapital" ist nicht definiert</Message.Header>
+                <p>Bitte ein Passivkonto mit dem Namen "Eigenkapital" erstellen, um Gewinnberechnung durchzuführen</p>
+            </Message>
+            );
+        }
         if (profit >= 0) {
             return (
                 <Message positive>
@@ -82,7 +89,8 @@ export const CloseBalance = (props) => {
         let accountBalances = {};
         let activeBalance = 0;
         let passiveBalance = 0;
-        let profit = 0;
+        let profit = null;
+
         accounts.forEach(account => {
             let accId = "/api/accounts/"+account.id;
             let openingBalance = openingBalances.filter(openingBalance => openingBalance.account === accId)[0];
@@ -90,12 +98,13 @@ export const CloseBalance = (props) => {
             let habenAmount = bookingOperations.filter(op => op.habenAccount === accId).map(op => op.amount).reduce(function(pv, cv) { return pv + cv; }, 0);
             let result = (openingBalance ? openingBalance.amount : 0) + (account.typ === "active" ? sollAmount - habenAmount : habenAmount - sollAmount);
             accountBalances[account.id] = result > 0 ? <span style={{color: "green", float:  "right"}}>{result}€</span> : <span style={{color: "red", float: "right"}}>{result}€</span>;
-            if(account.typ === "active") {
+            if(account.typ === "active")
                 activeBalance += result;
-                profit += result - (openingBalance ? openingBalance.amount : 0);
-            }
             else
                 passiveBalance += result;
+            if(account.name === "Eigenkapital" && account.typ === "passive") {
+                profit = result - (openingBalance ? openingBalance.amount : 0);
+            }
         });
         setBalances(accountBalances);
         setActiveBalance(activeBalance);
@@ -138,10 +147,14 @@ export const CloseBalance = (props) => {
                         </Segment>
                     </Grid.Column>
                     <Grid.Column width={3}>
-                        <Header as='h3' textAlign='center'>Validierung</Header>
-                        <ValidationMessage />
-                        <Header as='h3' textAlign='center'>Gewinn</Header>
-                        <Profit />
+                        {accounts && bookingOperations && openingBalances && balances &&
+                            <div>
+                            < Header as = 'h3' textAlign='center'>Validierung</Header>
+                            <ValidationMessage />
+                            <Header as='h3' textAlign='center'>Gewinn</Header>
+                            <Profit />
+                            </div>
+                            }
                     </Grid.Column>
                     <Grid.Column>
                         <Segment>
